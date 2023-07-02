@@ -1,5 +1,8 @@
 <script setup>
 import {RouterLink} from "vue-router";
+import {useAuthStore} from "@/stores/auth";
+
+const store = useAuthStore()
 </script>
 
 <template>
@@ -17,9 +20,11 @@ import {RouterLink} from "vue-router";
 
       <div class="flex items-center justify-center space-x-6 text-gray-600">
         <router-link class="hover:text-gray-900" to="/">Home</router-link>
-        <router-link class="hover:text-gray-900" to="/dashboard">Dashboard</router-link>
+        <template v-if="!store.authenticated">
         <router-link class="hover:text-gray-900" to="/login">Login</router-link>
         <router-link class="hover:text-gray-900" to="/register">Register</router-link>
+        </template>
+        <router-link v-else class="hover:text-gray-900" to="/dashboard">Dashboard</router-link>
       </div>
     </nav>
   </header>

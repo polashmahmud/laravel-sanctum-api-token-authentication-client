@@ -1,22 +1,23 @@
 <script setup>
 import {reactive} from "vue";
-import axios from "axios";
+import {useAuthStore} from "@/stores/auth";
+import router from "@/router";
+
+const store = useAuthStore()
 
 const form = reactive({
-  email: '',
-  password: ''
+  email: 'polashmahmud@gmail.com',
+  password: 'password'
 })
 
-const login = async () => {
-  let response = await axios.post('http://localhost:8000/api/auth/login', form);
+const login = () => {
 
-  console.log(response);
+  store.signIn(form)
 }
 </script>
 
 <template>
   <form @submit.prevent="login">
-    {{ form }}
     <h1 class="text-gray-900 text-2xl font-medium text-center mb-10">Login</h1>
     <div class="mb-3">
       <label for="email" class="leading-7 text-sm text-gray-600">Email</label>
