@@ -5,6 +5,7 @@ export const useAuthStore = defineStore('auth', {
     state: () => ({
         token: null,
         user: null,
+        errors: ""
     }),
     getters: {
         authenticated() {
@@ -17,6 +18,10 @@ export const useAuthStore = defineStore('auth', {
 
         getUser() {
             return this.user;
+        },
+
+        getErrors() {
+            return this.errors;
         }
     },
     actions: {
@@ -54,7 +59,25 @@ export const useAuthStore = defineStore('auth', {
                 let response = await axios.post('/auth/login', credentials);
                 await this.attempt(response.data.access_token)
             } catch (e) {
-                // show errors
+                if (e.response.status === 422) {
+                    this.errors = e.response.data.errors
+                }
+
+                throw e;
+            }
+        },
+
+        async register(credentials) {
+            try {
+                let response = await axios.post('/auth/register', credentials);
+
+                await this.attempt(response.data.access_token)
+            } catch (e) {
+                if (e.response.status === 422) {
+                    this.errors = e.response.data.errors
+                }
+
+                throw e;
             }
         },
 
