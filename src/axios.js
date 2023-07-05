@@ -11,7 +11,6 @@ axios.interceptors.request.use(function (config) {
     }
     return config;
 }, function (error) {
-    localStorage.removeItem('token');
     return Promise.reject(error);
 });
 

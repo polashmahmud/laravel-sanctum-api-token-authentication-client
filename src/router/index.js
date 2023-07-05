@@ -4,6 +4,8 @@ import Dashboard from "../views/Dashboard.vue";
 import Login from "../views/auth/Login.vue";
 import Register from "../views/auth/Register.vue";
 import Verify from "@/views/auth/Verify.vue";
+import NotFound from "@/views/NotFound.vue";
+
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -11,29 +13,63 @@ const router = createRouter({
         {
             path: '/',
             name: 'home',
-            component: Home
+            component: Home,
         },
         {
             path: '/dashboard',
             name: 'dashboard',
-            component: Dashboard
+            component: Dashboard,
+            beforeEnter: (to, from, next) => {
+                if (localStorage.getItem('token')) {
+                    next();
+                } else {
+                    next({name: 'login'});
+                }
+            }
         },
         {
             path: '/login',
             name: 'login',
-            component: Login
+            component: Login,
+            beforeEnter: (to, from, next) => {
+                if (localStorage.getItem('token')) {
+                    next({name: 'dashboard'});
+                } else {
+                    next();
+                }
+            }
         },
         {
             path: '/register',
             name: 'register',
-            component: Register
+            component: Register,
+            beforeEnter: (to, from, next) => {
+                if (localStorage.getItem('token')) {
+                    next({name: 'dashboard'});
+                } else {
+                    next();
+                }
+            }
         },
         {
             path: '/api/auth/email/verify',
             name: 'verify',
-            component: Verify
+            component: Verify,
+            beforeEnter: (to, from, next) => {
+                if (localStorage.getItem('token')) {
+                    next({name: 'dashboard'});
+                } else {
+                    next();
+                }
+            }
+        },
+        {
+            path: '/:pathMatch(.*)*',
+            name: 'not-found',
+            component: NotFound
         }
     ]
 })
+
 
 export default router
