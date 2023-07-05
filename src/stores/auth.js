@@ -63,6 +63,10 @@ export const useAuthStore = defineStore('auth', {
                     this.errors = e.response.data.errors
                 }
 
+                if (e.response.status === 401) {
+                    this.errors = {"email": [e.response.data.message]}
+                }
+
                 throw e;
             }
         },
