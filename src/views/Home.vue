@@ -13,7 +13,7 @@ const {authenticated, user} = storeToRefs(useAuthStore())
   </div>
 
   <div class="text-center" v-else>
-    Home Page
+    Home Page | You are not logged in.
   </div>
 </template>
 

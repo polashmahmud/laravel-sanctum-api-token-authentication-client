@@ -1,5 +1,9 @@
 import {defineStore} from "pinia";
 import axios from "axios";
+import {useToast} from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
+
+const $toast = useToast();
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
@@ -58,6 +62,8 @@ export const useAuthStore = defineStore('auth', {
             try {
                 let response = await axios.post('/auth/login', credentials);
                 await this.attempt(response.data.access_token)
+
+                $toast.success('You have been logged in successfully!');
             } catch (e) {
                 if (e.response.status === 422) {
                     this.errors = e.response.data.errors
@@ -76,6 +82,9 @@ export const useAuthStore = defineStore('auth', {
                 let response = await axios.post('/auth/register', credentials);
 
                 await this.attempt(response.data.access_token)
+
+                $toast.success('You have been registered successfully!');
+
             } catch (e) {
                 if (e.response.status === 422) {
                     this.errors = e.response.data.errors
@@ -92,6 +101,8 @@ export const useAuthStore = defineStore('auth', {
                 this.setUser(null);
                 localStorage.removeItem('token');
 
+                $toast.success('You have been logged out successfully!');
+
                 return response;
             } catch (e) {
                 this.setToken(null);
@@ -99,6 +110,16 @@ export const useAuthStore = defineStore('auth', {
                 localStorage.removeItem('token');
             }
 
+        },
+
+        async sendVerificationEmail() {
+            try {
+                await axios.post('/auth/email/verify/send');
+
+                $toast.success('Verification email has been sent successfully!');
+            } catch (e) {
+                throw e;
+            }
         }
     },
 })

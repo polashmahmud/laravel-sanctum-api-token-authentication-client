@@ -7,7 +7,7 @@ import {RouterView} from "vue-router";
   <div class="bg-gray-200 h-screen">
     <Navigation />
 
-    <main class="mt-60 bg-white max-w-lg w-full mx-auto p-6 rounded shadow">
+    <main class="mt-20 bg-white max-w-lg w-full mx-auto p-6 rounded shadow">
       <router-view></router-view>
     </main>
   </div>

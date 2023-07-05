@@ -1,6 +1,9 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import axios from "axios";
+import {useAuthStore} from "@/stores/auth";
+
+const {sendVerificationEmail } = useAuthStore();
 
 const verifiedMessage = ref(null);
 
@@ -13,14 +16,16 @@ onMounted(async () => {
       verifiedMessage.value = e.response.data.message;
     }
   }
-
 });
+
 </script>
 
 <template>
   <div class="text-red-500 flex flex-col items-center" v-if="verifiedMessage">
     {{ verifiedMessage }}
-    <button class="text-white bg-indigo-500 border-0 py-2 px-6 rounded text-lg hover:bg-indigo-600 mt-8">Verification email</button>
+    <button @click="sendVerificationEmail" class="text-white bg-indigo-500 border-0 py-2 px-6 rounded text-lg hover:bg-indigo-600 mt-8">Verification
+      email
+    </button>
   </div>
   <div v-else>Dashboard</div>
 </template>
