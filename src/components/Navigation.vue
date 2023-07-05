@@ -1,8 +1,18 @@
 <script setup>
 import {RouterLink} from "vue-router";
 import {useAuthStore} from "@/stores/auth";
+import {storeToRefs} from "pinia";
+import router from "@/router";
 
-const store = useAuthStore()
+const {logout} = useAuthStore()
+const {authenticated} = storeToRefs(useAuthStore())
+
+const handleLogout = () => {
+   logout().then(() => {
+     router.push({name: 'login'})
+   })
+}
+
 </script>
 
 <template>
@@ -20,11 +30,15 @@ const store = useAuthStore()
 
       <div class="flex items-center justify-center space-x-6 text-gray-600">
         <router-link class="hover:text-gray-900" to="/">Home</router-link>
-        <template v-if="!store.authenticated">
+        <template v-if="authenticated">
+          <router-link class="hover:text-gray-900" to="/dashboard">Dashboard</router-link>
+          <button @click="handleLogout" class="hover:text-gray-900">Logout</button>
+        </template>
+        <template v-else>
         <router-link class="hover:text-gray-900" to="/login">Login</router-link>
         <router-link class="hover:text-gray-900" to="/register">Register</router-link>
         </template>
-        <router-link v-else class="hover:text-gray-900" to="/dashboard">Dashboard</router-link>
+
       </div>
     </nav>
   </header>

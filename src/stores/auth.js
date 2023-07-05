@@ -6,38 +6,72 @@ export const useAuthStore = defineStore('auth', {
         token: null,
         user: null,
     }),
-
     getters: {
-        authenticated(state) {
-            return !!state.token && !!state.user;
+        authenticated() {
+            return !!this.token && !!this.user;
         },
 
-        auth(state) {
-            return state.user;
+        getToken() {
+            return this.token;
+        },
+
+        getUser() {
+            return this.user;
         }
     },
-
     actions: {
-        async signIn(credentials) {
-            let response = await axios.post('/auth/login', credentials);
+        setToken(token) {
+            this.token = token;
+        },
 
-            await localStorage.setItem('token', response.data.access_token);
-            return await this.attempt(response.data.access_token);
+        setUser(user) {
+            this.user = user;
         },
 
         async attempt(token) {
-            this.token = token;
+            if (token) {
+                this.setToken(token);
+            }
+
+            if (!this.token) {
+                return;
+            }
+
             try {
-                let response = await axios.get('/user');
-                this.user = response.data;
+                let response = await axios.get('/user')
+                this.setUser(response.data);
 
-                return response.data;
-
+                return response;
             } catch (e) {
-                this.token = null;
-                this.user = null;
+                this.setToken(null);
+                this.setUser(null);
                 localStorage.removeItem('token');
             }
+        },
+
+        async login(credentials) {
+            try {
+                let response = await axios.post('/auth/login', credentials);
+                await this.attempt(response.data.access_token)
+            } catch (e) {
+                // show errors
+            }
+        },
+
+        async logout() {
+            try {
+                let response = await axios.post('/auth/logout');
+                this.setToken(null);
+                this.setUser(null);
+                localStorage.removeItem('token');
+
+                return response;
+            } catch (e) {
+                this.setToken(null);
+                this.setUser(null);
+                localStorage.removeItem('token');
+            }
+
         }
-    }
+    },
 })
